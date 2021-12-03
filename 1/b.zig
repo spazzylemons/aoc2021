@@ -10,7 +10,7 @@ fn readNextNumber(file: std.fs.File) !?u32 {
 }
 
 pub fn main() !void {
-    const file = try std.fs.cwd().openFile("../puzzle1/input", .{});
+    const file = try std.fs.cwd().openFile("input", .{});
     defer file.close();
 
     var window = [3]?u32 { null, null, null };

@@ -36,7 +36,7 @@ const Submarine = struct {
 };
 
 pub fn main() !void {
-    const file = try std.fs.cwd().openFile("../puzzle3/input", .{});
+    const file = try std.fs.cwd().openFile("input", .{});
     defer file.close();
 
     var sub = Submarine {};

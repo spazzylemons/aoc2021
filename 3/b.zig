@@ -53,7 +53,7 @@ pub fn main() !void {
     defer _ = gpa.deinit();
     const allocator = &gpa.allocator;
 
-    const file = try std.fs.cwd().openFile("../puzzle5/input", .{});
+    const file = try std.fs.cwd().openFile("input", .{});
     defer file.close();
 
     var buf: [128]u8 = undefined;
