@@ -18,18 +18,10 @@ const dice_rolls = blk: {
     break :blk rolls;
 };
 
-const Cache = [10 * 10 * 21 * 21][2]u64;
-
-fn cacheIndex(p1_pos: u8, p1_score: u8, p2_pos: u8, p2_score: u8) u16 {
-    return @as(u16, p1_pos)
-        + (@as(u16, p1_score) * 10)
-        + (@as(u16, p2_pos) * 210)
-        + (@as(u16, p2_score) * 2100);
-}
+const Cache = [10][21][10][21][2]u64;
 
 fn game(p1_pos: u8, p1_score: u8, p2_pos: u8, p2_score: u8, cache: *Cache) [2]u64 {
-    const index = cacheIndex(p1_pos, p1_score, p2_pos, p2_score);
-    const cached = cache[index];
+    const cached = cache[p1_pos][p1_score][p2_pos][p2_score];
     if (cached[0] != 0 or cached[1] != 0) {
         return cached;
     } else {
@@ -45,7 +37,7 @@ fn game(p1_pos: u8, p1_score: u8, p2_pos: u8, p2_score: u8, cache: *Cache) [2]u6
                 wins[0] += new_wins[1];
             }
         }
-        cache[index] = wins;
+        cache[p1_pos][p1_score][p2_pos][p2_score] = wins;
         return wins;
     }
 }

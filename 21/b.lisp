@@ -10,28 +10,25 @@
                              (incf i)))))
 
 ; cache of game states
-(defparameter *game-state-cache* (make-array (* 10 10 21 21) :initial-element nil))
+(defparameter *game-state-cache*
+  (make-array (list 10 21 10 21) :initial-element nil))
 
 (defun game (p1-pos p1-score p2-pos p2-score)
-  (let* ((cache-index (+ p1-pos
-                         (* p1-score 10)
-                         (* p2-pos 210)
-                         (* p2-score 2100)))
-         (cached-result (aref *game-state-cache* cache-index)))
-    (or
-      cached-result
-      (let ((p1-wins 0) (p2-wins 0))
-        (loop for roll across *dice-rolls*
-              do (let* ((new-pos (mod (+ p1-pos roll) 10))
-                        (new-score (+ p1-score new-pos 1)))
-                   (cond
-                     ((>= new-score 21)
-                       (incf p1-wins))
-                     (t
-                       (let ((wins (game p2-pos p2-score new-pos new-score)))
-                         (incf p1-wins (cdr wins))
-                         (incf p2-wins (car wins)))))))
-        (setf (aref *game-state-cache* cache-index) (cons p1-wins p2-wins))))))
+  (or
+    (aref *game-state-cache* p1-pos p1-score p2-pos p2-score)
+    (let ((p1-wins 0) (p2-wins 0))
+      (loop for roll across *dice-rolls*
+            do (let* ((new-pos (mod (+ p1-pos roll) 10))
+                      (new-score (+ p1-score new-pos 1)))
+                 (cond
+                   ((>= new-score 21)
+                     (incf p1-wins))
+                   (t
+                     (let ((wins (game p2-pos p2-score new-pos new-score)))
+                       (incf p1-wins (cdr wins))
+                       (incf p2-wins (car wins)))))))
+      (setf (aref *game-state-cache* p1-pos p1-score p2-pos p2-score)
+        (cons p1-wins p2-wins)))))
 
 (defun load-one-initial-pos (file)
   (let ((line (read-line file)))
